@@ -1,20 +1,78 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// App.js
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-export default function App() {
+import LoginPage from "./src/pages/LoginPage";
+import HomePage from "./src/pages/HomePage";
+import QRCodePage from "./src/pages/QRCodePage";
+import ScanQRCodePage from "./src/pages/ScanQRCodePage";
+
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Login"
+          component={LoginPage}
+          options={{
+            title: "Login",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomePage}
+          options={{
+            title: "Home",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="QRCode"
+          component={QRCodePage}
+          options={{
+            title: "My QR Code",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="ScanQRCode"
+          component={ScanQRCodePage}
+          options={{
+            title: "Scan QR Code",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
