@@ -17,9 +17,10 @@ const QRCodePage = () => {
     try {
       const user = await AsyncStorage.getItem("user");
 
+
       if (user !== null) {
         const parsedUser = JSON.parse(user);
-        setUserId(parsedUser.id);
+        setUserId(parsedUser.id + "");
         setUsername(parsedUser.username);
       }
     } catch (error) {

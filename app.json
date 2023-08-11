@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "rotary",
+    "name": "Rotary Club of Tanauan",
     "slug": "rotary",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,14 +15,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ronnelrobles.rotary"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ronnelrobles.rotary"
+      "package": "com.ronnelrobles.rotary",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

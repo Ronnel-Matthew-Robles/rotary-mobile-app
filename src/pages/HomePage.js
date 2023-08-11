@@ -1,6 +1,9 @@
 // src/pages/HomePage.js
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet, TouchableOpacity, Linking, Image } from "react-native";
+// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+// import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomePage = ({ navigation }) => {
@@ -27,6 +30,7 @@ const HomePage = ({ navigation }) => {
     try {
       // Clear user data from storage
       await AsyncStorage.removeItem("user");
+      await AsyncStorage.removeItem("token");
 
       // Navigate back to the login page
       // navigation.navigate("Login");
@@ -39,6 +43,11 @@ const HomePage = ({ navigation }) => {
     }
   };
 
+  const handleNotifications = () => {
+    // Navigate to the QR code page for the current user
+    navigation.navigate("Notifications");
+  };
+
   const handleShowQRCode = () => {
     // Navigate to the QR code page for the current user
     navigation.navigate("QRCode");
@@ -49,25 +58,58 @@ const HomePage = ({ navigation }) => {
     navigation.navigate("ScanQRCode");
   };
 
+  const handlePublications = () => {
+    // Navigate to the QR code scanning page
+    navigation.navigate("Publications");
+  };
+
+  const openFinancialStatements = async () => {
+    const url = 'https://docs.google.com/spreadsheets/d/1hQ5Mr8ZLMA41evkBf6ewQkRgvR_mmXMn/edit?usp=sharing&ouid=115738078745041042163&rtpof=true&sd=true';
+    const supported = await Linking.canOpenURL(url);
+    
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      console.log(`Don't know how to open this URL: ${uri}`);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {/* Add your logo or any other relevant images here */}
+      <Image source={require('../../assets/favicon.png')} style={styles.logo} />
+          <TouchableOpacity style={styles.notificationsButton} onPress={() => handleNotifications()}>
+            <Text style={styles.buttonText}>Notifs</Text>
+          </TouchableOpacity>
       <Text style={styles.welcomeText}>
-        Welcome to the Home Page, {currentUser?.username}!
+        Welcome, {currentUser?.username}!
       </Text>
-      <Text style={styles.featuresText}>Features:</Text>
-      <Button
-        title="Show My QR Code"
-        onPress={handleShowQRCode}
-        color="#FBA418"
-      />
-      {currentUser?.role === "admin" && (
-        <Button
-          title="Scan QR Code"
-          onPress={handleScanQRCode}
-          color="#FBA418"
-        />
-      )}
-      <Button title="Logout" onPress={handleLogout} color="#FBA418" />
+      <View style={styles.featuresContainer}>
+        <Text style={styles.featuresText}>Features:</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleShowQRCode}>
+            {/* <FontAwesome5 name={"qrcode"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+            <Text style={styles.buttonText}>Show My QR Code</Text>
+          </TouchableOpacity>
+          {currentUser?.role === "admin" && (
+            <TouchableOpacity style={styles.button} onPress={handleScanQRCode}>
+              {/* <FontAwesome5 name={"camera"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+              <Text style={styles.buttonText}>Scan QR Code</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.button} onPress={handlePublications}>
+            {/* <FontAwesome5 name={"newspaper"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+            <Text style={styles.buttonText}>Publications</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => openFinancialStatements()}>
+            {/* <MaterialIcons name={"attach-money"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+            <Text style={styles.buttonText}>Financial Statements</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -80,18 +122,76 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#FFF",
   },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 32,
+  },
   welcomeText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#06478F",
+    color: "#000",
+  },
+  featuresContainer: {
+    width: "100%",
+    alignItems: "center",
   },
   featuresText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 8,
-    color: "#06478F",
+    color: "#000",
+  },
+  buttonContainer: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  button: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FBA418",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 10,
+    marginBottom: 12,
+  },
+  buttonIcon: {
+    marginRight: 10,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  logoutButton: {
+    backgroundColor: "#FBA418",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 10,
+  },
+  logoutButtonText: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  notificationsButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderRadius: 10,
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: '#FBA418', // Adjust to your color
+    // borderRadius: 20,
+    // width: 40,
+    // height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // elevation: 3, // Add elevation for a shadow effect
   },
 });
+
 
 export default HomePage;

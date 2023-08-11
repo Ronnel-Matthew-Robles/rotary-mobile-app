@@ -15,6 +15,7 @@ const ScanQRCodePage = () => {
   const [text, setText] = useState("Not yet scanned");
   const [attendanceMessage, setAttendanceMessage] = useState("");
   const [attendees, setAttendees] = useState([]);
+  const [err, setError] = useState('');
 
   const askForCameraPermission = async () => {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -28,8 +29,8 @@ const ScanQRCodePage = () => {
 
   const fetchAttendees = async () => {
     try {
-      const response = await fetch("https://rotary-ams.site/api/getAttendance");
-      const attendeesData = await response.json();
+      const response = await axios("https://rotary-ams.site/api/attendance/today");
+      const attendeesData = await response.data;
       setAttendees(attendeesData);
     } catch (error) {
       console.log("Error fetching attendees:", error);
@@ -40,26 +41,35 @@ const ScanQRCodePage = () => {
     setScanned(true);
     setText(data);
 
+
     try {
       const response = await axios.post(
-        "https://rotary-ams.site/api/attendance",
-        { id: data }
+        "https://rotary-ams.site/api/attendance/log",
+        { member_id: data }
       );
 
-      const { account_details } = await response.data;
+      if (response.status === 200) {
+        setError('');
+        const { member } = await response.data;
 
-      if (account_details.length > 0) {
-        const { first_name, last_name } = account_details[0];
-        setAttendanceMessage(
-          `Attendance for ${first_name} ${last_name} has been logged.`
-        );
-        fetchAttendees(); // Fetch updated attendees after successful attendance log
+        if (member) {
+          const { first_name, last_name } = member;
+          setAttendanceMessage(
+            `Attendance for ${first_name} ${last_name} has been logged.`
+          );
+          fetchAttendees(); // Fetch updated attendees after successful attendance log
+        } else {
+          setAttendanceMessage("Error logging attendance.");
+        }
       } else {
-        setAttendanceMessage("Error logging attendance.");
+        // Handle other status codes (e.g., 404)
+        setAttendanceMessage("An unexpected error occurred.");
       }
     } catch (error) {
       console.log("Error logging attendance:", error);
-      setAttendanceMessage("An unexpected error occurred.");
+      setError(
+        error.response?.data?.message || "An unexpected error occurred."
+      );
     }
   };
 
@@ -71,15 +81,19 @@ const ScanQRCodePage = () => {
 
   const renderAttendeeItem = ({ item }) => (
     <View style={styles.attendeeItem}>
-      <Text style={styles.attendeeName}>{item.name}</Text>
-      <Text style={styles.attendeeTime}>{formatTime(item.time_in)}</Text>
+      <Text style={styles.attendeeName}>{item.member.first_name} {item.member.last_name} </Text>
+      <Text style={styles.attendeeTime}>{formatTime(item.attended_at)}</Text>
     </View>
   );
 
   const formatTime = (time) => {
-    // Format time as per your requirement
-    // Example: Convert "01:00:04 AM" to "01:00 AM"
-    const formattedTime = time.substring(0, 8);
+    // Format time as "HH:mm AM/PM"
+    // Example: Convert "2023-08-01 04:16:59" to "04:16 AM"
+    const dateTimeObj = new Date(time);
+    const hours = dateTimeObj.getHours();
+    const minutes = dateTimeObj.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedTime = `${(hours % 12).toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
     return formattedTime;
   };
 
@@ -110,6 +124,7 @@ const ScanQRCodePage = () => {
       <Text>ID: {text}</Text>
       {scanned && (
         <>
+          <Text>{err}</Text>
           <Text style={styles.attendanceMessage}>{attendanceMessage}</Text>
           <TouchableOpacity
             style={styles.scanAgainButton}
@@ -119,13 +134,19 @@ const ScanQRCodePage = () => {
           </TouchableOpacity>
         </>
       )}
-      <Text style={styles.attendeesTitle}>Attendees Today:</Text>
-      <FlatList
-        data={attendees}
-        renderItem={renderAttendeeItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.attendeesList}
-      />
+      {
+        attendees.length > 0 && (
+          <>
+            <Text style={styles.attendeesTitle}>Attendees Today:</Text>
+            <FlatList
+              data={attendees}
+              renderItem={renderAttendeeItem}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={styles.attendeesList}
+            />
+          </>
+        )
+      }
     </View>
   );
 };
