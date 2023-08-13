@@ -1,8 +1,8 @@
 // src/pages/HomePage.js
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Linking, Image } from "react-native";
-// import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-// import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -63,15 +63,8 @@ const HomePage = ({ navigation }) => {
     navigation.navigate("Publications");
   };
 
-  const openFinancialStatements = async () => {
-    const url = 'https://docs.google.com/spreadsheets/d/1hQ5Mr8ZLMA41evkBf6ewQkRgvR_mmXMn/edit?usp=sharing&ouid=115738078745041042163&rtpof=true&sd=true';
-    const supported = await Linking.canOpenURL(url);
-    
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.log(`Don't know how to open this URL: ${uri}`);
-    }
+  const handleFinancialStatements = async () => {
+    navigation.navigate("FinancialStatements")
   };
 
   return (
@@ -79,7 +72,7 @@ const HomePage = ({ navigation }) => {
       {/* Add your logo or any other relevant images here */}
       <Image source={require('../../assets/favicon.png')} style={styles.logo} />
           <TouchableOpacity style={styles.notificationsButton} onPress={() => handleNotifications()}>
-            <Text style={styles.buttonText}>Notifs</Text>
+          <FontAwesome5 name="bell" size={24} color="#FFF" />
           </TouchableOpacity>
       <Text style={styles.welcomeText}>
         Welcome, {currentUser?.username}!
@@ -88,21 +81,21 @@ const HomePage = ({ navigation }) => {
         <Text style={styles.featuresText}>Features:</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleShowQRCode}>
-            {/* <FontAwesome5 name={"qrcode"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+            <FontAwesome5 name={"qrcode"} size={24} color="#FFF" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Show My QR Code</Text>
           </TouchableOpacity>
           {currentUser?.role === "admin" && (
             <TouchableOpacity style={styles.button} onPress={handleScanQRCode}>
-              {/* <FontAwesome5 name={"camera"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+              <FontAwesome5 name={"camera"} size={24} color="#FFF" style={styles.buttonIcon} />
               <Text style={styles.buttonText}>Scan QR Code</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity style={styles.button} onPress={handlePublications}>
-            {/* <FontAwesome5 name={"newspaper"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+            <FontAwesome5 name={"newspaper"} size={24} color="#FFF" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Publications</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => openFinancialStatements()}>
-            {/* <MaterialIcons name={"attach-money"} size={24} color="#FFF" style={styles.buttonIcon} /> */}
+          <TouchableOpacity style={styles.button} onPress={handleFinancialStatements}>
+            <MaterialIcons name={"attach-money"} size={24} color="#FFF" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Financial Statements</Text>
           </TouchableOpacity>
         </View>
@@ -177,19 +170,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   notificationsButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderRadius: 10,
     position: 'absolute',
     top: 20,
     right: 20,
     backgroundColor: '#FBA418', // Adjust to your color
-    // borderRadius: 20,
-    // width: 40,
-    // height: 40,
+    borderRadius: 20,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    // elevation: 3, // Add elevation for a shadow effect
   },
 });
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Button, Alert } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const NotificationsScreen = ({ notifs }) => {
     const [notifications, setNotifications] = useState([]);
@@ -9,8 +10,8 @@ const NotificationsScreen = ({ notifs }) => {
   
     useEffect(() => {
       const loadNotifications = async () => {
-        const allNotifs = await AsyncStorage.getItem('notifications');
-        const allNotifications = JSON.parse(allNotifs);
+        const response = await axios.get('https://rotary-ams.site/api/notifications');
+        const allNotifications = response.data.notifications;
   
         if (allNotifications) {
             // Sort notifications by date in descending order (newest first)
@@ -20,14 +21,6 @@ const NotificationsScreen = ({ notifs }) => {
       
             setNotifications(sortedNotifications);
       
-            // Mark all notifications as seen when user visits the screen
-            const updatedNotifications = sortedNotifications.map((notification) => ({
-              ...notification,
-              seen: true,
-            }));
-      
-            AsyncStorage.setItem('notifications', JSON.stringify(updatedNotifications));
-      
             // Calculate the number of unseen notifications
             const unseenCount = sortedNotifications.reduce(
               (count, notification) => (notification.seen ? count : count + 1),
@@ -35,21 +28,49 @@ const NotificationsScreen = ({ notifs }) => {
             );
             setUnseenCount(unseenCount);
         }
+
+        await markNotificationsToBeSeen();
       };
+
+      const markNotificationsToBeSeen = async () => {
+        try {
+          const response = await axios.put('https://rotary-ams.site/api/notifications/mark-as-seen');
+        } catch (e) {
+          console.log('Having problems marking the notifications as seen');
+        }
+      }
   
       loadNotifications();
     }, []);
   
     const clearNotifications = async () => {
-      // Filter out notifications that are seen
-      const unseenNotifications = notifications.filter(item => !item.seen);
-    
-      // Update AsyncStorage and state
-      await AsyncStorage.setItem('notifications', JSON.stringify(unseenNotifications));
-      setNotifications(unseenNotifications);
-      setUnseenCount(0);
+      try {
+        // Show a confirmation alert
+        Alert.alert(
+          'Clear Notifications',
+          'Are you sure you want to clear all notifications?',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'OK',
+              onPress: async () => {
+                // User confirmed, proceed to clear notifications
+                await axios.delete('https://rotary-ams.site/api/notifications/clear-seen');
+                const response = await axios.get('https://rotary-ams.site/api/notifications');
+                const unseenNotifications = response.data.notifications;
+                setNotifications(unseenNotifications);
+                setUnseenCount(0);
+              },
+            },
+          ]
+        );
+      } catch (e) {
+        console.log('Something went wrong clearing the notifications');
+      }
     };
-    
   
     return (
       <View style={styles.container}>
@@ -85,13 +106,13 @@ const NotificationsScreen = ({ notifs }) => {
                     />
                     <View>
                     <Text style={styles.notificationTitle}>
-                    {item.request.content.title}
+                    {item.title}
                     </Text>
                     <Text style={styles.notificationMessage}>
-                        {item.request.content.body}
+                        {item.body}
                     </Text>
                     <Text style={styles.notificationMessage}>
-                        {new Date(item.date).toLocaleString()}
+                        {item.sent_at}
                     </Text>
                     </View>
                 </View>

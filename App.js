@@ -10,6 +10,7 @@ import NotificationsPage from "./src/pages/NotificationsPage";
 import QRCodePage from "./src/pages/QRCodePage";
 import ScanQRCodePage from "./src/pages/ScanQRCodePage";
 import PublicationsPage from "./src/pages/PublicationsPage";
+import FinancialStatementsPage from "./src/pages/FinancialStatementsPage";
 
 // import * as Device from 'expo-device';
 import { Platform } from "react-native";
@@ -148,6 +149,20 @@ const App = () => {
           component={PublicationsPage}
           options={{
             title: "Publications",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="FinancialStatements"
+          component={FinancialStatementsPage}
+          options={{
+            title: "Financial Statements",
             headerStyle: {
               backgroundColor: "#06478F",
             },

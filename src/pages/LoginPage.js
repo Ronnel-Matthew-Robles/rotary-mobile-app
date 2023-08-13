@@ -4,8 +4,8 @@ import { View, TextInput, Button, Text, StyleSheet, TouchableOpacity, Image } fr
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-// import { AntDesign } from '@expo/vector-icons';
-// import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const LoginPage = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -84,7 +84,7 @@ const LoginPage = ({ navigation }) => {
     <View style={styles.container}>
       <Image source={require('../../assets/favicon.png')} style={styles.logo} />
       <View style={styles.inputContainer}>
-        {/* <AntDesign name="user" size={24} color="#06478F" style={styles.icon} /> */}
+        <AntDesign name="user" size={24} color="#06478F" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -93,7 +93,7 @@ const LoginPage = ({ navigation }) => {
         />
       </View>
       <View style={styles.inputContainer}>
-        {/* <MaterialIcons name="lock" size={24} color="#06478F" style={styles.icon} /> */}
+        <MaterialIcons name="lock" size={24} color="#06478F" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Password"
