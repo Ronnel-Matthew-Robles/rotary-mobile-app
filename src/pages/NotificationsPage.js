@@ -104,16 +104,16 @@ const NotificationsScreen = ({ notifs }) => {
                     source={require('../../assets/favicon.png')} // Replace with your logo image
                     style={styles.notificationLogo}
                     />
-                    <View>
-                    <Text style={styles.notificationTitle}>
-                    {item.title}
-                    </Text>
-                    <Text style={styles.notificationMessage}>
-                        {item.body}
-                    </Text>
-                    <Text style={styles.notificationMessage}>
-                        {item.sent_at}
-                    </Text>
+                    <View style={styles.notificationMessageContainer}>
+                      <Text style={styles.notificationTitle}>
+                      {item.title}
+                      </Text>
+                      <Text style={styles.notificationMessage}>
+                          {item.body}
+                      </Text>
+                      <Text style={styles.notificationMessage}>
+                          {item.sent_at}
+                      </Text>
                     </View>
                 </View>
                 {/* Display date or other information */}
@@ -152,29 +152,36 @@ const NotificationsScreen = ({ notifs }) => {
       fontSize: 16,
     },
     notificationItem: {
-        padding: 10,
-        marginBottom: 8,
-        borderWidth: 1,
-        borderColor: '#EAEAEA',
-        borderRadius: 8,
-        },
-        unseenNotification: {
-        backgroundColor: '#F5F5F5', // Change to your preferred color
-        },
-        notificationHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-        },
-        notificationLogo: {
-        width: 50,
-        height: 50,
-        marginRight: 8,
-        },
+      padding: 10,
+      marginBottom: 8,
+      borderWidth: 1,
+      borderColor: '#EAEAEA',
+      borderRadius: 8,
+    },
+    unseenNotification: {
+      backgroundColor: '#F5F5F5', // Change to your preferred color
+    },
+    notificationHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+    },
+    notificationLogo: {
+      width: 50,
+      height: 50,
+      marginRight: 8,
+    },
     notificationMessage: {
       fontSize: 14,
       color: '#666',
+      flexWrap: 'wrap', // Allow text to wrap
     },
+    notificationMessageContainer: {
+      flex: 1, // Allow the container to grow vertically
+    },
+    notificationTitle: {
+      fontWeight: 'bold', // Set the fontWeight to bold
+    }
   };
   
   export default NotificationsScreen;

@@ -11,6 +11,7 @@ import QRCodePage from "./src/pages/QRCodePage";
 import ScanQRCodePage from "./src/pages/ScanQRCodePage";
 import PublicationsPage from "./src/pages/PublicationsPage";
 import FinancialStatementsPage from "./src/pages/FinancialStatementsPage";
+import AttendanceSheetPage from "./src/pages/AttendanceSheetPage";
 
 // import * as Device from 'expo-device';
 import { Platform } from "react-native";
@@ -163,6 +164,20 @@ const App = () => {
           component={FinancialStatementsPage}
           options={{
             title: "Financial Statements",
+            headerStyle: {
+              backgroundColor: "#06478F",
+            },
+            headerTintColor: "#FFF",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
+        <Stack.Screen
+          name="AttendanceSheet"
+          component={AttendanceSheetPage}
+          options={{
+            title: "Attendance Sheet",
             headerStyle: {
               backgroundColor: "#06478F",
             },

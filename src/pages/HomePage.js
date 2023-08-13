@@ -67,6 +67,10 @@ const HomePage = ({ navigation }) => {
     navigation.navigate("FinancialStatements")
   };
 
+  const handleAttendanceSheet = async () => {
+    navigation.navigate("AttendanceSheet")
+  };
+
   return (
     <View style={styles.container}>
       {/* Add your logo or any other relevant images here */}
@@ -83,6 +87,10 @@ const HomePage = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={handleShowQRCode}>
             <FontAwesome5 name={"qrcode"} size={24} color="#FFF" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Show My QR Code</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={handleAttendanceSheet}>
+            <FontAwesome5 name={"sticky-note"} size={24} color="#FFF" style={styles.buttonIcon} />
+            <Text style={styles.buttonText}>Attendance Sheet</Text>
           </TouchableOpacity>
           {currentUser?.role === "admin" && (
             <TouchableOpacity style={styles.button} onPress={handleScanQRCode}>
